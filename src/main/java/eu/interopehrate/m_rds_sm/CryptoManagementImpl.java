@@ -104,13 +104,6 @@ public class CryptoManagementImpl implements CryptoManagement {
         return publicKey;
     }
 
-    @Override
-    //todo: delete
-    public void fetchCertificate(Context context) throws NoSuchAlgorithmException, NoSuchProviderException {
-        KeyPair keyPair = generateKeyPair();
-        createKeyStore(keyPair,context);
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public String signPayload(String payload, PrivateKey privateKey)
@@ -169,77 +162,6 @@ public class CryptoManagementImpl implements CryptoManagement {
             ks.load( null , KEYSTORE_PASSWORD.toCharArray());
         }
         return ks;
-    }
-
-    //TODO: delete
-    public KeyStore createKeyStore(KeyPair keyPair, Context context) {
-        KeyStore ks = null;
-
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(getKeystorePath(context));
-
-            // Build empty keystore
-            ks = KeyStore.getInstance(KeyStore.getDefaultType());
-            X509Certificate certificate = generateCertificate( keyPair );
-            ks.load(null, KEYSTORE_PASSWORD.toCharArray());
-            ks.setKeyEntry( KEYSTORE_ALIAS,
-                    keyPair.getPrivate(),
-                    null,
-                    new X509Certificate[]{
-                            certificate
-                    } );
-            ks.store(fos, KEYSTORE_PASSWORD.toCharArray()); // Export keystore in a file
-        } catch (Exception e) {
-            Log.e("Exception",e.getMessage());
-        } finally {
-            try {
-                if (fos != null)
-                    fos.close();
-            } catch (IOException e) {
-                // Intentionally blank
-            }
-        }
-        return ks;
-    }
-
-    //TODO: To be replaced form the CA
-    //TODO: delete
-    private static X509Certificate generateCertificate(KeyPair keyPair)
-            throws OperatorCreationException, CertificateException, InvalidKeyException,
-            NoSuchAlgorithmException, NoSuchProviderException, SignatureException
-    {
-        String issuerString = "C=IT, O=InteropEHRate, OU=InteropEHRate Certificate, CN=Mario Rossi, UID=0f3e03e0-b4ca-4a76-821d-bdef16267ed0";
-        // subjects name - the same as we are self signed.
-        String subjectString = "C=IT, O=InteropEHRate, OU=InteropEHRate Certificate, CN=Mario Rossi, UID=0f3e03e0-b4ca-4a76-821d-bdef16267ed0";
-        // String issuerString = "C=DE, O=datenkollektiv, OU=Planets Debug Certificate";
-        // subjects name - the same as we are self signed.
-        // String subjectString = "C=DE, O=datenkollekitv, OU=Planets Debug Certificate";
-        X500Name issuer = new X500Name( issuerString );
-        BigInteger serial = BigInteger.ONE;
-        Date notBefore = new Date();
-        Date notAfter = new Date( System.currentTimeMillis() + ( 365 * 24 * 60 * 60 ) );
-        X500Name subject = new X500Name( subjectString );
-        PublicKey publicKey = keyPair.getPublic();
-        JcaX509v3CertificateBuilder v3Bldr = new JcaX509v3CertificateBuilder( issuer,
-                serial,
-                notBefore,
-                notAfter,
-                subject,
-                publicKey );
-        X509CertificateHolder certHldr = v3Bldr
-                .build( new JcaContentSignerBuilder( "SHA1WithRSA" ).build( keyPair.getPrivate() ) );
-        X509Certificate cert = new JcaX509CertificateConverter().getCertificate( certHldr );
-        cert.checkValidity( new Date() );
-        cert.verify( keyPair.getPublic() );
-        return cert;
-    }
-
-    public KeyPair generateKeyPair() throws NoSuchAlgorithmException, NoSuchProviderException {
-        KeyPairGenerator keyGen = KeyPairGenerator.getInstance( "RSA" );
-        SecureRandom random = SecureRandom.getInstance( "SHA1PRNG");
-        keyGen.initialize( 1024, random );
-        return keyGen.generateKeyPair();
     }
 
     @Override

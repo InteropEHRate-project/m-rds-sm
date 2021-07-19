@@ -50,13 +50,6 @@ public interface CryptoManagement {
 
     /**
      *
-     * Responsible to get Certificate
-     *
-     */
-    public void fetchCertificate(Context context) throws NoSuchAlgorithmException, NoSuchProviderException;
-
-    /**
-     *
      * Responsible for signing payload data
      *
      * @param payload Tha payload to signed
