@@ -71,13 +71,6 @@ public class CryptoManagementImpl implements CryptoManagement {
      */
     public final static String KEYSTORE_PASSWORD = "interop";
 
-    /**
-     * Keystore password
-     */
-    //TODO: how?
-    public final static String KEYSTORE_ALIAS = "GRxavi";
-
-
     private CAService ca;
     private EncryptedCommunication encryptedCommunication;
 
@@ -87,25 +80,21 @@ public class CryptoManagementImpl implements CryptoManagement {
     }
 
     @Override
-    //TODO: test
-    // KEYSTORE_ALIAS
-    public PrivateKey getPrivateKey(Context context)
+    public PrivateKey getPrivateKey(Context context, String keystoreAlias)
             throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException {
         String path = getKeystorePath(context);
         FileInputStream fis = new FileInputStream(path);
         KeyStore keystore = loadKeystore(fis);
-        PrivateKey privateKey = (PrivateKey) keystore.getKey(KEYSTORE_ALIAS,KEYSTORE_PASSWORD.toCharArray());
+        PrivateKey privateKey = (PrivateKey) keystore.getKey(keystoreAlias,KEYSTORE_PASSWORD.toCharArray());
         return privateKey;
     }
 
     @Override
-    //TODO: test
-    // KEYSTORE_ALIAS
-    public RSAPublicKey getPublicKey(Context context) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
+    public RSAPublicKey getPublicKey(Context context, String keystoreAlias) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
         String path = getKeystorePath(context);
         FileInputStream fis = new FileInputStream(path);
         KeyStore keystore = loadKeystore(fis);
-        Certificate cert = keystore.getCertificate(KEYSTORE_ALIAS);
+        Certificate cert = keystore.getCertificate(keystoreAlias);
         PublicKey pkey = cert.getPublicKey();
         RSAPublicKey publicKey = (RSAPublicKey) pkey;
         return publicKey;

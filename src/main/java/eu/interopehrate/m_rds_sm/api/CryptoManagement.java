@@ -8,7 +8,6 @@ import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SignatureException;
@@ -40,7 +39,7 @@ public interface CryptoManagement {
      * @return PrivateKey
      *
      */
-    public PrivateKey getPrivateKey(Context context) throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException;
+    public PrivateKey getPrivateKey(Context context, String keystoreAlias) throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException;
 
     /**
      *
@@ -51,7 +50,7 @@ public interface CryptoManagement {
      * @return RSAPublicKe
      *
      */
-    public RSAPublicKey getPublicKey(Context context) throws CertificateException, NoSuchAlgorithmException, IOException, KeyStoreException;
+    public RSAPublicKey getPublicKey(Context context, String keystoreAlias) throws CertificateException, NoSuchAlgorithmException, IOException, KeyStoreException;
 
     /**
      *
