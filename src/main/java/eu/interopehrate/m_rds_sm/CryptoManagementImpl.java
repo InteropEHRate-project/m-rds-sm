@@ -8,27 +8,15 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
-import org.bouncycastle.asn1.x500.X500Name;
-import org.bouncycastle.cert.X509CertificateHolder;
-import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
-import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
-import org.bouncycastle.operator.OperatorCreationException;
-import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
-
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
-import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.SecureRandom;
 import java.security.Signature;
 import java.security.SignatureException;
 import java.security.UnrecoverableKeyException;
@@ -36,13 +24,14 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
-import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import javax.crypto.KeyAgreement;
 import javax.crypto.spec.SecretKeySpec;
 
 import eu.interopehrate.m_rds_sm.api.CryptoManagement;
+import eu.interopehrate.security_commons.consent.ConsentManagementFactory;
+import eu.interopehrate.security_commons.consent.api.ConsentManagement;
 import eu.interopehrate.security_commons.encryptedCommunication.EncryptedCommunicationFactory;
 import eu.interopehrate.security_commons.encryptedCommunication.api.EncryptedCommunication;
 import eu.interopehrate.security_commons.services.ca.CAServiceFactory;
@@ -73,10 +62,12 @@ public class CryptoManagementImpl implements CryptoManagement {
 
     private CAService ca;
     private EncryptedCommunication encryptedCommunication;
+    private ConsentManagement consentManagement;
 
     public CryptoManagementImpl(String caUrl) {
         ca = CAServiceFactory.create(caUrl);
         encryptedCommunication = EncryptedCommunicationFactory.create();
+        consentManagement = ConsentManagementFactory.create();
     }
 
     @Override
@@ -231,13 +222,23 @@ public class CryptoManagementImpl implements CryptoManagement {
     }
 
     @Override
-    public KeyAgreement bobKeyAgreementFin(PublicKey alicePubKey, KeyAgreement bobKeyAgree) throws Exception {
-        return encryptedCommunication.bobKeyAgreementFin(alicePubKey, bobKeyAgree);
+    public KeyAgreement bobKeyAgreementFin(byte[] alicePubKeyEnc, KeyAgreement bobKeyAgree) throws Exception {
+        return encryptedCommunication.bobKeyAgreementFin(alicePubKeyEnc, bobKeyAgree);
     }
 
     @Override
     public SecretKeySpec generateSymmtericKey(byte[] sharedSecret, int size) {
         return encryptedCommunication.generateSymmtericKey(sharedSecret, size);
+    }
+
+    @Override
+    public String generateConsent() {
+        return consentManagement.generateConsent();
+    }
+
+    @Override
+    public X509Certificate toX509Certificate(byte[] certificateData) throws CertificateException {
+        return ca.toX509Certificate(certificateData);
     }
 
 }

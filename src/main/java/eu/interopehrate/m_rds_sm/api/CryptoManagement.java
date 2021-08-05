@@ -13,6 +13,7 @@ import java.security.PublicKey;
 import java.security.SignatureException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.concurrent.ExecutionException;
@@ -186,7 +187,7 @@ public interface CryptoManagement {
      * Bob generate the (same) shared secret.
      *
      */
-    public KeyAgreement bobKeyAgreementFin(PublicKey alicePubKey, KeyAgreement bobKeyAgree) throws Exception;
+    public KeyAgreement bobKeyAgreementFin(byte[] alicePubKeyEnc, KeyAgreement bobKeyAgree) throws Exception;
 
     /**
      *
@@ -195,5 +196,15 @@ public interface CryptoManagement {
      *
      */
     SecretKeySpec generateSymmtericKey(byte[] sharedSecret, int size);
+
+    /**
+     *
+     * Responsible for consent generation of the RRC to the S-EHR App
+     *
+     */
+    public String generateConsent();
+
+
+    X509Certificate toX509Certificate(byte[] certificateData) throws CertificateException;
 
 }
