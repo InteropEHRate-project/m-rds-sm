@@ -30,6 +30,7 @@ import javax.crypto.KeyAgreement;
 import javax.crypto.spec.SecretKeySpec;
 
 import eu.interopehrate.m_rds_sm.api.CryptoManagement;
+import eu.interopehrate.m_rds_sm.util.FileUtil;
 import eu.interopehrate.security_commons.consent.ConsentManagementFactory;
 import eu.interopehrate.security_commons.consent.api.ConsentManagement;
 import eu.interopehrate.security_commons.encryptedCommunication.EncryptedCommunicationFactory;
@@ -71,8 +72,15 @@ public class CryptoManagementImpl implements CryptoManagement {
     }
 
     @Override
-    public PrivateKey getPrivateKey(Context context, String keystoreAlias)
+    public String getKeystoreAlias(Context context) throws IOException {
+        String alias = FileUtil.LoadData(context, context.getFilesDir().getAbsolutePath() + "/alias");
+        return  alias;
+    }
+
+    @Override
+    public PrivateKey getPrivateKey(Context context)
             throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException {
+        String keystoreAlias = getKeystoreAlias(context);
         String path = getKeystorePath(context);
         FileInputStream fis = new FileInputStream(path);
         KeyStore keystore = loadKeystore(fis);
@@ -81,7 +89,8 @@ public class CryptoManagementImpl implements CryptoManagement {
     }
 
     @Override
-    public RSAPublicKey getPublicKey(Context context, String keystoreAlias) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
+    public RSAPublicKey getPublicKey(Context context) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
+        String keystoreAlias = getKeystoreAlias(context);
         String path = getKeystorePath(context);
         FileInputStream fis = new FileInputStream(path);
         KeyStore keystore = loadKeystore(fis);

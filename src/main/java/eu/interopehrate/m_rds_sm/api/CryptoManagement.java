@@ -31,6 +31,8 @@ import javax.crypto.spec.SecretKeySpec;
  *
  */
 public interface CryptoManagement {
+    public String getKeystoreAlias(Context context) throws IOException;
+
     /**
      *
      * Responsible for loading PrivateKey from Keystore
@@ -40,7 +42,7 @@ public interface CryptoManagement {
      * @return PrivateKey
      *
      */
-    public PrivateKey getPrivateKey(Context context, String keystoreAlias) throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException;
+    public PrivateKey getPrivateKey(Context context) throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException;
 
     /**
      *
@@ -51,7 +53,7 @@ public interface CryptoManagement {
      * @return RSAPublicKe
      *
      */
-    public RSAPublicKey getPublicKey(Context context, String keystoreAlias) throws CertificateException, NoSuchAlgorithmException, IOException, KeyStoreException;
+    public RSAPublicKey getPublicKey(Context context) throws CertificateException, NoSuchAlgorithmException, IOException, KeyStoreException;
 
     /**
      *
