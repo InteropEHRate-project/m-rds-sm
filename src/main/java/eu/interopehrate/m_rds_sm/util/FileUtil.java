@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.Log;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,7 +16,8 @@ public class FileUtil {
         BufferedReader reader = null;
         StringBuilder builder = new StringBuilder();
         try {
-            InputStream stream = context.getAssets().open(fileName);
+            //Load data from the device
+            FileInputStream stream = new FileInputStream (new File(fileName));
             reader = new BufferedReader(
                     new InputStreamReader(stream, "UTF-8"));
 

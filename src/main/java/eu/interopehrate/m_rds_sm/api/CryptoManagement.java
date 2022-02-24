@@ -44,6 +44,9 @@ public interface CryptoManagement {
      */
     public PrivateKey getPrivateKey(Context context) throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException;
 
+    byte[] getCertificateFromKeystore(Context context)
+            throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException;
+
     /**
      *
      * Responsible for loading RSAPublicKe from Keystore

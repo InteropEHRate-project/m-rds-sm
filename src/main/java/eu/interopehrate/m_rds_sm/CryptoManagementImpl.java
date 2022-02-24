@@ -89,6 +89,18 @@ public class CryptoManagementImpl implements CryptoManagement {
     }
 
     @Override
+    public byte[] getCertificateFromKeystore(Context context)
+            throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException {
+        String keystoreAlias = getKeystoreAlias(context);
+        String path = getKeystorePath(context);
+        FileInputStream fis = new FileInputStream(path);
+        KeyStore keystore = loadKeystore(fis);
+        Certificate cert = keystore.getCertificate(keystoreAlias);
+        byte[] isoBytes = Base64.encodeToString(cert.getEncoded(), Base64.DEFAULT).getBytes("ISO-8859-1");
+        return isoBytes;
+    }
+
+    @Override
     public RSAPublicKey getPublicKey(Context context) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
         String keystoreAlias = getKeystoreAlias(context);
         String path = getKeystorePath(context);
