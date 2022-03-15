@@ -37,8 +37,6 @@ import eu.interopehrate.security_commons.encryptedCommunication.EncryptedCommuni
 import eu.interopehrate.security_commons.encryptedCommunication.api.EncryptedCommunication;
 import eu.interopehrate.security_commons.services.ca.CAServiceFactory;
 import eu.interopehrate.security_commons.services.ca.api.CAService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -264,20 +262,6 @@ public class CryptoManagementImpl implements CryptoManagement {
     @Override
     public X509Certificate toX509Certificate(byte[] certificateData) throws CertificateException {
         return ca.toX509Certificate(certificateData);
-    }
-
-
-    @Override
-    public X509Certificate getCertificateFromJws(String jwsToken) throws CertificateException {
-        Claims jwtClaims = Jwts.parser()
-                .setSigningKey(secretKey)
-                .parseClaimsJws(jwsToken).getBody();
-
-        String res = jwtClaims.get("certificate").toString();
-        byte[] certificateData = Base64.decode(res, Base64.DEFAULT);
-
-        X509Certificate certificate = toX509Certificate(certificateData);
-        return certificate;
     }
 
     @Override

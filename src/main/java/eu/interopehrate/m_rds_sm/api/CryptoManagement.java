@@ -11,7 +11,6 @@ import java.security.KeyPair;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.SignatureException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
@@ -213,8 +212,6 @@ public interface CryptoManagement {
 
 
     X509Certificate toX509Certificate(byte[] certificateData) throws CertificateException;
-
-    X509Certificate getCertificateFromJws(String jwsToken) throws CertificateException;
 
     Boolean verifyDetachedJws(String jwsToken, String payload) throws CertificateException, JsonProcessingException, NoSuchAlgorithmException, InvalidKeyException, SignatureException;
 
