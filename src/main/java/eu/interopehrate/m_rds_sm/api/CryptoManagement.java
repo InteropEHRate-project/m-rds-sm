@@ -2,6 +2,8 @@ package eu.interopehrate.m_rds_sm.api;
 
 import android.content.Context;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
@@ -211,5 +213,10 @@ public interface CryptoManagement {
 
 
     X509Certificate toX509Certificate(byte[] certificateData) throws CertificateException;
+
+    X509Certificate getCertificateFromJws(String jwsToken) throws CertificateException;
+
+    Boolean verifyDetachedJws(String jwsToken, String payload) throws CertificateException, JsonProcessingException, NoSuchAlgorithmException, InvalidKeyException, SignatureException;
+
 
 }

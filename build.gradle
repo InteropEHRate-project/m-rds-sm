@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: "maven-publish"
 group = "eu.interoperhate"
-version="0.1.1"
+version="0.3.0"
 
 android {
     compileSdkVersion 30
@@ -45,7 +45,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation 'org.bouncycastle:bcprov-jdk15on:1.56'
     implementation 'org.bouncycastle:bcpkix-jdk15on:1.56'
-    implementation('eu.interopehrate:security-commons:0.0.1')
+    implementation('eu.interopehrate:security-commons:0.0.3')
 }
 
 /*
