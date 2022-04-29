@@ -215,5 +215,6 @@ public interface CryptoManagement {
 
     Boolean verifyDetachedJws(String jwsToken, String payload) throws CertificateException, JsonProcessingException, NoSuchAlgorithmException, InvalidKeyException, SignatureException;
 
+    String createDetachedJws(byte[] certificateData, String signed) throws JsonProcessingException;
 
 }

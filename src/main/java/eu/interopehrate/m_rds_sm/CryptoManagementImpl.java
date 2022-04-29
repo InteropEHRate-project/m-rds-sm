@@ -271,5 +271,9 @@ public class CryptoManagementImpl implements CryptoManagement {
         return verifySignature(rsaPublicKey,payload.getBytes(), signed.getBytes());
     }
 
+    @Override
+    public String createDetachedJws(byte[] certificateData, String signed) throws JsonProcessingException {
+        return ca.createDetachedJws(certificateData, signed);
+    }
 
 }
