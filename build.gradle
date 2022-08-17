@@ -1,0 +1,107 @@
+apply plugin: 'com.android.library'
+apply plugin: "maven-publish"
+group = "eu.interopehrate"
+version="0.3.1"
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+
+        // Required when setting minSdkVersion to 20 or lower
+        multiDexEnabled = true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        // Flag to enable support for the new language APIs
+        coreLibraryDesugaringEnabled = true
+        // Sets Java compatibility to Java 8
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.56'
+    implementation 'org.bouncycastle:bcpkix-jdk15on:1.56'
+    implementation('eu.interopehrate:security-commons:0.0.3')
+}
+
+/*
+ * Configuration of a task, for publishing mrd2sm.arr into a Nexus Repository
+ */
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = "mrdssm"
+            artifact("build/outputs/aar/$archivesBaseName" + "-release.aar") {
+//            artifact("build/outputs/aar/lib-debug.aar") {
+                extension "aar"
+
+                // adds dependencies to the generated POM
+                pom.withXml {
+                    def dependenciesNode = asNode().appendNode('dependencies')
+
+                    //Iterate over the dependencies, adding a <dependency> node for each
+                    configurations.releaseCompileClasspath.allDependencies.each {
+                        if (it.group != null && it.name != null) {
+                            def dependencyNode = dependenciesNode.appendNode('dependency')
+                            dependencyNode.appendNode('groupId', it.group)
+                            dependencyNode.appendNode('artifactId', it.name)
+                            dependencyNode.appendNode('version', it.version)
+
+                            //If there are any exclusions in dependency
+                            if (it.excludeRules.size() > 0) {
+                                def exclusionsNode = dependencyNode.appendNode('exclusions')
+                                it.excludeRules.each { rule ->
+                                    def exclusionNode = exclusionsNode.appendNode('exclusion')
+                                    exclusionNode.appendNode('groupId', rule.group)
+                                    exclusionNode.appendNode('artifactId', rule.module)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // descriptive information to add to the generated POM file
+            pom {
+                name = 'MRDSSM  Library'
+                description = 'Android library (developed by InteropEHRate consortium) for remote secruity needs.'
+                url = 'http://www.interopehrate.eu'
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name "IEHR-Nexus"
+            url "http://213.249.46.206:8081/repository/maven-releases/"
+            credentials {
+                username ""
+                password ""
+            }
+        }
+    }
+}
